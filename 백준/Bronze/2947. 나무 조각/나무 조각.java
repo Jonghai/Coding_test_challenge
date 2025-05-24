@@ -14,7 +14,7 @@ public class Main {
         }
 
         while (true) {
-            boolean flag = false;
+            boolean swapped = false;
             for (int i = 0; i < numbers.length - 1; i++) {
                 int firstNum = numbers[i];
                 int secondNum = numbers[i + 1];
@@ -22,10 +22,10 @@ public class Main {
                     numbers[i] = secondNum;
                     numbers[i + 1] = firstNum;
                     printNumbers(numbers);
-                    flag = true;
+                    swapped = true;
                 }
             }
-            if (!flag) {
+            if (!swapped) {
                 break;
             }
         }
