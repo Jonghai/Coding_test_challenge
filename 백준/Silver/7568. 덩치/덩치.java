@@ -18,8 +18,6 @@ public class Main {
             persons.add(new Person(weight, height));
         }
 
-
-        // 키와 몸무게 둘 다 높은 사람이 있다면 place = 1
         for (int i = 0; i < persons.size(); i++) {
             int rank = 1; // 1등부터 시작
 
