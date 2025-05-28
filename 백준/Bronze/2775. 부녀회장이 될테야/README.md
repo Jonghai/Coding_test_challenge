@@ -30,3 +30,119 @@
 
  <p>각각의 Test case에 대해서 해당 집에 거주민 수를 출력하라.</p>
 
+## 문제 이해
+### 아파트 계약 규칙
+- 0층 i 호에는 i명이 살고 있음.
+- a층 b호에 살기 위해서는 아래층`(a-1층)`의 1호~b호까지 모든 사람들의 합을 데려와야 함.
+
+### 입력
+- 첫 줄: 테스트 케이스 수 **T**
+- 이 후 각 케이스마다
+	1. 층 수: **k** (0이상 14 이하)
+	2. 호 수: n (0이상 14 이하)
+
+### 출력
+각 케이스에 대해 k층 n호에 사는 사람 수 출력
+
+### 예시
+0층: 1 2 3 4 ...  
+1층 3호: 1층 1호 ~3호까지의 합 = 1 + 2 + 3 = 6
+
+시간 제한: 0.5초
+
+
+## 코드 설계
+
+먼저 해당 문제에 대해 이해를 하고 피보나치 수열을 생각하여 점화식을 구함. <br>
+#### => `f(k, n) = f(k-1, n) + f(k, n-1)`
+
+#### 종료조건1: k가 0 일 때 n을 반환 (0층 일 때)
+#### 종료조건2: n이 1일 때 1 반환(1호 일 때)
+
+재귀를 도는데 종료조건 하나라도 빼먹으면 **StackOverflow 발생!**
+### 첫 번째 코드
+```java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int pair = sc.nextInt();
+
+        for (int i = 0; i < pair; i++) {
+            int k = sc.nextInt();
+            int n = sc.nextInt();
+            System.out.println(fibo(k, n));
+        }
+
+
+    }
+
+    //피보나치 수열 계산하는 메서드
+    static int fibo(int k, int n) {
+
+        if (k == 0) {
+            return n;
+        }
+        if (n == 1) {
+            return 1;
+        }
+
+        return fibo(k- 1, n) + fibo(k, n-1);
+    }
+}
+
+```
+
+### 개선 된 두 번째 코드 (메모이제이션 적용)
+
+#### 메모이제이션
+- 이미 계산한 결과를 저장(캐시) 하기
+- 같은 값이 다시 필요할 때 저장된 값을 사용
+- 증복 계산을 방지해서 속도 향상
+
+```java
+import java.util.Scanner;
+
+public class Main {
+
+    static int[][] memo = new int[15][15];
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int pair = sc.nextInt();
+
+        for (int i = 0; i < pair; i++) {
+            int k = sc.nextInt();
+            int n = sc.nextInt();
+            System.out.println(fibo(k, n));
+        }
+
+
+    }
+
+    //피보나치 수열 계산하는 메서드
+    static int fibo(int k, int n) {
+        // 이미 계산된 값이 있으면 반환
+        if (memo[k][n] != 0) return memo[k][n];
+
+        // 종료조건
+        if (k == 0) {
+            return memo[k][n] = n;
+        }
+        if (n == 1) {
+            return memo[k][n] = 1;
+        }
+
+        return memo[k][n] = fibo(k- 1, n) + fibo(k, n-1);
+    }
+}
+```
+
+- 같은 `(k, n)` 에 대해 중복 호출 제거.
+- 끝까지 재귀를 돌지 않고 이전에 계산한 값을 즉시 반환
+
+첫번째 코드:  **352ms** <br>
+두번째 코드(메모이제이션으로 개선): **224ms**
+
